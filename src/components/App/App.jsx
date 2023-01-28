@@ -5,6 +5,7 @@ import {Filter} from '../Filter/Filter';
 import {ContactsList} from '../ContactsList/ContactsList';
 import { nanoid } from 'nanoid';
 
+const LOCAL_STORAGE_NAME = 'contacts-list';
 
 class App extends React.Component {
   state = {
@@ -52,6 +53,19 @@ class App extends React.Component {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== id)
     }))
+  }
+
+  componentDidMount() {
+    const getLocalStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_NAME));
+    if (getLocalStorage !== null) {
+      this.setState({contacts: getLocalStorage})
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(LOCAL_STORAGE_NAME, JSON.stringify(this.state.contacts))
+    }
   }
 
   render() {
